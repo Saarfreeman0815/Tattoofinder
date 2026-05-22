@@ -242,7 +242,7 @@ async function generiereTattoo() {
       promptEN = promptRaw; // Fallback auf Original
     }
 
-    const prompt = `tattoo design, ${promptEN}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
+    const prompt = `${promptEN}, ${aktuellerStil} tattoo flash art, white background, professional tattoo design illustration`;
 
     const imageElement = await puter.ai.txt2img(prompt, aktuellesModel);
     const imageUrl = imageElement.src;
