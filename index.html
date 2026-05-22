@@ -197,18 +197,30 @@ async function generiereTattoo() {
     return;
   }
 
-  const prompt = `tattoo design, ${promptRaw}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
-
   istAmGenerieren = true;
   document.getElementById('gen-btn').disabled = true;
   document.getElementById('gen-btn').textContent = '⏳ KI arbeitet...';
   document.getElementById('loading-bar').classList.add('aktiv');
-  document.getElementById('status-txt').textContent = '🤖 KI generiert dein Tattoo... (10-30 Sekunden)';
+  document.getElementById('status-txt').textContent = '🔄 Übersetze Prompt...';
   document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon" style="animation:spin 1s linear infinite;display:inline-block">⚙️</div><div style="margin-top:12px">Generiere...</div></div>`;
 
   try {
-    // Puter.js - kein Key, kein CORS, kostenlos!
-    const imageElement = await puter.ai.txt2img(prompt, { model: 'black-forest-labs/flux-schnell' });
+    // Deutsch → Englisch übersetzen
+    let promptEN = promptRaw;
+    try {
+      const translated = await puter.ai.chat(
+        `Translate this tattoo description to English. Only return the English translation, nothing else: "${promptRaw}"`,
+        { model: 'claude-haiku-4-5' }
+      );
+      promptEN = translated?.message?.content?.[0]?.text || promptRaw;
+      document.getElementById('status-txt').textContent = '🤖 Generiere: ' + promptEN.slice(0,50) + '...';
+    } catch(e) {
+      promptEN = promptRaw; // Fallback auf Original
+    }
+
+    const prompt = `tattoo design, ${promptEN}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
+
+    const imageElement = await puter.ai.txt2img(prompt, { model: 'black-forest-labs/flux-1.1-pro' });
     const imageUrl = imageElement.src;
 
     const resultArea = document.getElementById('result-area');
