@@ -244,8 +244,29 @@ async function generiereTattoo() {
 
     const prompt = `${promptEN}, ${aktuellerStil} tattoo flash art, white background, professional tattoo design illustration`;
 
-    const imageElement = await puter.ai.txt2img(prompt, aktuellesModel);
-    const imageUrl = imageElement.src;
+    let imageElement;
+    const modelOpts = { ...aktuellesModel };
+
+    // SD XL - Safety Checker deaktivieren
+    if (modelOpts.model?.includes('stable-diffusion-xl')) {
+      modelOpts.disable_safety_checker = true;
+    }
+
+    // Flux 1.1 Pro Fallback auf flux-dev wenn Server Error
+    if (modelOpts.model === 'black-forest-labs/flux-1.1-pro') {
+      try {
+        imageElement = await puter.ai.txt2img(prompt, modelOpts);
+      } catch(e) {
+        if (e.message?.includes('500') || e.message?.includes('Internal')) {
+          document.getElementById('status-txt').textContent = '⚠️ Flux 1.1 überlastet — versuche Flux Dev...';
+          imageElement = await puter.ai.txt2img(prompt, { model: 'black-forest-labs/flux-2-dev', provider: 'replicate-image-generation' });
+        } else throw e;
+      }
+    } else {
+      imageElement = await puter.ai.txt2img(prompt, modelOpts);
+    }
+
+    const imageUrl = imageElement.src || imageElement;
 
     const resultArea = document.getElementById('result-area');
     resultArea.innerHTML = `
