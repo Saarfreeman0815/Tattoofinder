@@ -208,7 +208,7 @@ async function generiereTattoo() {
 
   try {
     // Puter.js - kein Key, kein CORS, kostenlos!
-    const imageElement = await puter.ai.txt2img(prompt, false, 'dall-e-3');
+    const imageElement = await puter.ai.txt2img(prompt, { model: 'black-forest-labs/flux-schnell' });
     const imageUrl = imageElement.src;
 
     const resultArea = document.getElementById('result-area');
