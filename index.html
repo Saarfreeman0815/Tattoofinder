@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>TattooFinder</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root {
   --bg: #1a1a2e;
@@ -13,12 +14,10 @@
   --border: #3a3a5c;
   --text: #e8e8f0;
   --muted: #8888aa;
-  --accent: #7c3aed;
-  --accent2: #a855f7;
   --cyan: #00ffcc;
-  --red: #f87171;
-  --green: #34d399;
   --gold: #fbbf24;
+  --green: #34d399;
+  --red: #f87171;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
@@ -27,150 +26,127 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--cyan); }
 .header-sub { font-size: .62rem; color: var(--muted); letter-spacing: 1px; }
 
-.content { flex: 1; overflow-y: auto; padding: 16px; }
+.content { flex: 1; overflow-y: auto; padding: 14px; }
 
-/* KI GENERATOR */
-.gen-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-.gen-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--cyan); margin-bottom: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--cyan); margin-bottom: 12px; }
 
-.prompt-area { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.prompt-inp { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; width: 100%; resize: none; min-height: 60px; }
-.prompt-inp:focus { border-color: var(--cyan); }
-.prompt-inp::placeholder { color: var(--muted); }
+.lbl { font-size: .62rem; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; }
 
-.style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
-.style-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; color: var(--muted); font-size: .72rem; cursor: pointer; text-align: center; transition: all .2s; font-family: 'Inter', sans-serif; }
-.style-btn.aktiv { background: rgba(0,255,204,.15); border-color: var(--cyan); color: var(--cyan); }
-.style-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.chips { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; flex-wrap: nowrap; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 18px; padding: 6px 13px; color: var(--muted); font-size: .73rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all .15s; }
+.chip.on, .chip:hover { background: rgba(0,255,204,.15); border-color: var(--cyan); color: var(--cyan); }
 
-.gen-btn { width: 100%; padding: 16px; background: var(--cyan); border: none; border-radius: 12px; color: #000; font-weight: 700; font-size: 1rem; cursor: pointer; letter-spacing: 1px; font-family: 'Inter', sans-serif; transition: all .2s; }
-.gen-btn:hover { background: #00ddaa; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.model-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; cursor: pointer; text-align: center; transition: all .15s; }
+.model-btn.on { background: rgba(0,255,204,.15); border-color: var(--cyan); }
+.model-name { font-size: .78rem; font-weight: 700; color: var(--text); }
+.model-tag { font-size: .6rem; margin-top: 2px; }
+
+textarea.inp { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: .88rem; outline: none; resize: none; min-height: 64px; }
+textarea.inp:focus { border-color: var(--cyan); }
+textarea.inp::placeholder { color: var(--muted); }
+
+.gen-btn { width: 100%; padding: 15px; background: var(--cyan); border: none; border-radius: 12px; color: #000; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 12px; letter-spacing: 1px; }
 .gen-btn:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; }
 
-.result-area { margin-top: 16px; }
-.result-img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; }
-.result-placeholder { width: 100%; aspect-ratio: 1; background: var(--surface2); border-radius: 12px; border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: .82rem; gap: 12px; }
-.result-placeholder .icon { font-size: 3rem; }
+.status { font-size: .72rem; color: var(--muted); text-align: center; margin-top: 8px; min-height: 18px; }
 
+.loading-bar { height: 3px; background: var(--surface2); border-radius: 2px; margin-top: 8px; overflow: hidden; display: none; }
+.loading-bar.on { display: block; }
+.loading-fill { height: 100%; background: var(--cyan); animation: load 1.8s ease-in-out infinite; }
+@keyframes load { 0%{width:0;margin-left:0} 50%{width:60%;margin-left:20%} 100%{width:0;margin-left:100%} }
+
+.result-box { margin-top: 14px; }
+.result-placeholder { aspect-ratio: 1; background: var(--surface2); border-radius: 12px; border: 2px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); gap: 10px; font-size: .82rem; }
+.result-img { width: 100%; border-radius: 12px; display: block; }
 .result-btns { display: flex; gap: 8px; margin-top: 10px; }
-.btn-out { background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; font-size: .82rem; flex: 1; font-family: 'Inter', sans-serif; }
-.btn-out:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn { background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px; font-size: .8rem; cursor: pointer; flex: 1; font-family: 'Inter', sans-serif; transition: all .15s; }
+.btn:hover { border-color: var(--cyan); color: var(--cyan); }
 
-/* SCHNELL-VORLAGEN */
-.quick-title { font-size: .65rem; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; }
-.quick-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-.quick-scroll::-webkit-scrollbar { display: none; }
-.quick-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; color: var(--muted); font-size: .75rem; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; transition: all .2s; flex-shrink: 0; }
-.quick-chip:hover { border-color: var(--accent2); color: var(--accent2); }
+.verlauf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.v-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; }
+.v-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.v-info { padding: 6px 8px; font-size: .68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* VERLAUF */
-.verlauf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px; }
-.verlauf-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all .2s; }
-.verlauf-card:hover { border-color: var(--cyan); }
-.verlauf-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-.verlauf-info { padding: 8px; font-size: .7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empty { text-align: center; padding: 50px 20px; color: var(--muted); }
 
-/* LOADING */
-.loading-bar { width: 100%; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 12px; display: none; }
-.loading-bar.aktiv { display: block; }
-.loading-fill { height: 100%; background: var(--cyan); border-radius: 2px; animation: loading 2s ease-in-out infinite; }
-@keyframes loading { 0% { width: 0%; margin-left: 0%; } 50% { width: 60%; margin-left: 20%; } 100% { width: 0%; margin-left: 100%; } }
-
-.status-txt { font-size: .72rem; color: var(--muted); text-align: center; margin-top: 8px; min-height: 18px; }
-
-/* TABBAR */
 .tabbar { background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-shrink: 0; }
-.tab { flex: 1; background: transparent; border: none; color: var(--muted); padding: 10px 4px 8px; font-size: .62rem; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: color .2s; }
-.tab .tab-icon { font-size: 1.2rem; }
-.tab.aktiv { color: var(--cyan); border-top: 2px solid var(--cyan); }
+.tab { flex: 1; background: transparent; border: none; color: var(--muted); padding: 10px 4px 8px; font-size: .62rem; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.tab-icon { font-size: 1.2rem; }
+.tab.on { color: var(--cyan); border-top: 2px solid var(--cyan); }
 
-/* FAVORITEN */
-.fav-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin 1s linear infinite; }
 </style>
-<script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
 <div class="header">
   <div>
     <div class="header-title">🖋️ TATTOOFINDER</div>
-    <div class="header-sub">KI TATTOO GENERATOR · KOSTENLOS · KEIN ACCOUNT</div>
-  </div>
-  <div style="font-size:.65rem;color:var(--muted);text-align:right;line-height:1.4;">
-    KI<br>powered
+    <div class="header-sub">KI GENERATOR · KOSTENLOS · KEIN ACCOUNT</div>
   </div>
 </div>
 
 <div class="content" id="content">
 
-  <!-- GENERATOR -->
-  <div class="gen-card">
-    <div class="gen-title">🤖 KI TATTOO GENERATOR</div>
+  <div class="card">
+    <div class="card-title">🤖 KI TATTOO GENERATOR</div>
 
-    <!-- SCHNELL-VORLAGEN -->
-    <div class="quick-title">SCHNELL-AUSWAHL</div>
-    <div class="quick-scroll" id="quick-scroll">
-      <div class="quick-chip" onclick="setPrompt('realistic wolf tattoo, black ink, detailed')">🐺 Wolf</div>
-      <div class="quick-chip" onclick="setPrompt('majestic lion tattoo, black and grey, realistic')">🦁 Löwe</div>
-      <div class="quick-chip" onclick="setPrompt('dragon tattoo, japanese style, detailed scales')">🐉 Drache</div>
-      <div class="quick-chip" onclick="setPrompt('eagle tattoo, spread wings, black ink, detailed')">🦅 Adler</div>
-      <div class="quick-chip" onclick="setPrompt('snake tattoo, coiled, detailed scales, black ink')">🐍 Schlange</div>
-      <div class="quick-chip" onclick="setPrompt('tribal tattoo design, bold black lines, geometric')">⚡ Tribal</div>
-      <div class="quick-chip" onclick="setPrompt('traditional japanese tattoo, koi fish, waves')">🗾 Japanisch</div>
-      <div class="quick-chip" onclick="setPrompt('old school tattoo, anchor, roses, traditional')">⚓ Oldschool</div>
-      <div class="quick-chip" onclick="setPrompt('minimalist tattoo, simple line art, small')">✦ Minimal</div>
-      <div class="quick-chip" onclick="setPrompt('skull tattoo, detailed, gothic style, black ink')">💀 Totenkopf</div>
-      <div class="quick-chip" onclick="setPrompt('rose tattoo, realistic petals, black and grey shading')">🌹 Rose</div>
-      <div class="quick-chip" onclick="setPrompt('geometric tattoo, mandala pattern, sacred geometry')">🔷 Geometrisch</div>
-      <div class="quick-chip" onclick="setPrompt('mandala tattoo, intricate pattern, symmetrical')">🔮 Mandala</div>
-      <div class="quick-chip" onclick="setPrompt('phoenix tattoo, rising flames, colorful, detailed')">🔥 Phoenix</div>
-      <div class="quick-chip" onclick="setPrompt('tiger tattoo, realistic, fierce, black and grey')">🐅 Tiger</div>
-      <div class="quick-chip" onclick="setPrompt('samurai tattoo, japanese warrior, traditional style')">⚔️ Samurai</div>
-      <div class="quick-chip" onclick="setPrompt('butterfly tattoo, delicate wings, watercolor style')">🦋 Schmetterling</div>
-      <div class="quick-chip" onclick="setPrompt('compass tattoo, nautical, detailed, geometric')">🧭 Kompass</div>
+    <div class="lbl">SCHNELL-AUSWAHL</div>
+    <div class="chips" style="margin-bottom:14px;">
+      <div class="chip" onclick="setPrompt('realistic wolf tattoo')">🐺 Wolf</div>
+      <div class="chip" onclick="setPrompt('majestic lion tattoo')">🦁 Löwe</div>
+      <div class="chip" onclick="setPrompt('dragon tattoo japanese style')">🐉 Drache</div>
+      <div class="chip" onclick="setPrompt('eagle spread wings tattoo')">🦅 Adler</div>
+      <div class="chip" onclick="setPrompt('snake coiled tattoo')">🐍 Schlange</div>
+      <div class="chip" onclick="setPrompt('tribal tattoo bold geometric')">⚡ Tribal</div>
+      <div class="chip" onclick="setPrompt('japanese traditional tattoo koi fish')">🗾 Japanisch</div>
+      <div class="chip" onclick="setPrompt('old school anchor roses tattoo')">⚓ Oldschool</div>
+      <div class="chip" onclick="setPrompt('minimalist line art tattoo')">✦ Minimal</div>
+      <div class="chip" onclick="setPrompt('detailed skull gothic tattoo')">💀 Totenkopf</div>
+      <div class="chip" onclick="setPrompt('realistic rose tattoo black grey')">🌹 Rose</div>
+      <div class="chip" onclick="setPrompt('geometric mandala tattoo')">🔷 Mandala</div>
+      <div class="chip" onclick="setPrompt('phoenix rising flames tattoo')">🔥 Phoenix</div>
+      <div class="chip" onclick="setPrompt('tiger fierce realistic tattoo')">🐅 Tiger</div>
+      <div class="chip" onclick="setPrompt('samurai warrior japanese tattoo')">⚔️ Samurai</div>
+      <div class="chip" onclick="setPrompt('butterfly watercolor tattoo')">🦋 Schmetterling</div>
     </div>
 
-    <!-- STIL AUSWAHL -->
-    <div class="quick-title" style="margin-top:14px;">STIL</div>
-    <div class="style-grid" id="style-grid">
-      <button class="style-btn aktiv" onclick="setStil('black ink', this)">⬛ Black Ink</button>
-      <button class="style-btn" onclick="setStil('black and grey', this)">🩶 Black & Grey</button>
-      <button class="style-btn" onclick="setStil('watercolor', this)">🎨 Watercolor</button>
-      <button class="style-btn" onclick="setStil('traditional', this)">⚓ Traditional</button>
-      <button class="style-btn" onclick="setStil('japanese', this)">🗾 Japanese</button>
-      <button class="style-btn" onclick="setStil('geometric', this)">🔷 Geometric</button>
+    <div class="lbl">STIL</div>
+    <div class="chips" style="margin-bottom:14px;">
+      <div class="chip on" id="stil-blackink" onclick="setStil('black ink', this)">⬛ Black Ink</div>
+      <div class="chip" id="stil-blackgrey" onclick="setStil('black and grey shading', this)">🩶 Black & Grey</div>
+      <div class="chip" id="stil-watercolor" onclick="setStil('watercolor style', this)">🎨 Watercolor</div>
+      <div class="chip" id="stil-traditional" onclick="setStil('traditional old school', this)">⚓ Traditional</div>
+      <div class="chip" id="stil-japanese" onclick="setStil('japanese irezumi style', this)">🗾 Japanese</div>
+      <div class="chip" id="stil-geometric" onclick="setStil('geometric lines', this)">🔷 Geometric</div>
     </div>
 
-    <!-- MODEL AUSWAHL -->
-    <div class="quick-title" style="margin-top:14px;">KI MODEL</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <button class="style-btn aktiv" id="model-schnell" onclick="setModel({model:'black-forest-labs/flux-schnell', provider:'replicate-image-generation'}, this)">
-        ⚡ Flux Schnell<br><span style="font-size:.6rem;color:var(--green);">Kostenlos</span>
-      </button>
-      <button class="style-btn" id="model-pro" onclick="setModel({model:'black-forest-labs/flux-1.1-pro', provider:'replicate-image-generation'}, this)">
-        🔥 Flux 1.1 Pro<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
-      </button>
-      <button class="style-btn" id="model-sd3" onclick="setModel({model:'stabilityai/stable-diffusion-3-medium', provider:'replicate-image-generation'}, this)">
-        🎨 SD 3 Medium<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
-      </button>
-      <button class="style-btn" id="model-dalle" onclick="setModel({model:'dall-e-3', provider:'openai-image-generation'}, this)">
-        🤖 DALL-E 3<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
-      </button>
+    <div class="lbl">KI MODEL</div>
+    <div class="grid2">
+      <div class="model-btn on" id="m-schnell" onclick="setModel('black-forest-labs/flux-schnell', this)">
+        <div class="model-name">⚡ Flux Schnell</div>
+        <div class="model-tag" style="color:var(--green);">Kostenlos</div>
+      </div>
+      <div class="model-btn" id="m-pro" onclick="setModel('black-forest-labs/flux-1.1-pro', this)">
+        <div class="model-name">🔥 Flux 1.1 Pro</div>
+        <div class="model-tag" style="color:var(--gold);">Puter Guthaben</div>
+      </div>
     </div>
 
-    <!-- PROMPT -->
-    <div class="prompt-area">
-      <textarea class="prompt-inp" id="prompt-inp" placeholder="Beschreib dein Tattoo auf Englisch oder Deutsch... z.B: Wolf mit Mond, tribal style" rows="2"></textarea>
-    </div>
+    <div class="lbl">DEIN TATTOO</div>
+    <textarea class="inp" id="prompt-inp" placeholder="Beschreib dein Tattoo... z.B: Wolf mit Mond, realistisch" rows="2"></textarea>
 
-    <button class="gen-btn" id="gen-btn" onclick="generiereTattoo()">🤖 TATTOO GENERIEREN</button>
-    <div class="loading-bar" id="loading-bar"><div class="loading-fill"></div></div>
-    <div class="status-txt" id="status-txt">Beschreib dein Traum-Tattoo und lass die KI es erstellen!</div>
+    <button class="gen-btn" id="gen-btn" onclick="generiere()">🤖 TATTOO GENERIEREN</button>
+    <div class="loading-bar" id="lbar"><div class="loading-fill"></div></div>
+    <div class="status" id="status">Beschreib dein Traum-Tattoo!</div>
 
-    <!-- ERGEBNIS -->
-    <div class="result-area" id="result-area">
-      <div class="result-placeholder" id="result-placeholder">
-        <div class="icon">🖋️</div>
+    <div class="result-box" id="result-box">
+      <div class="result-placeholder">
+        <div style="font-size:2.5rem;">🖋️</div>
         <div>Dein KI Tattoo erscheint hier</div>
       </div>
     </div>
@@ -179,159 +155,144 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 </div>
 
 <div class="tabbar">
-  <button class="tab aktiv" onclick="showPanel('generator', this)">
-    <span class="tab-icon">🤖</span><span>Generator</span>
-  </button>
-  <button class="tab" onclick="showPanel('verlauf', this)">
-    <span class="tab-icon">🖼️</span><span>Meine Tattoos</span>
-  </button>
-  <button class="tab" onclick="showPanel('studios', this)">
-    <span class="tab-icon">📍</span><span>Studios</span>
-  </button>
+  <button class="tab on" onclick="showTab('generator', this)"><span class="tab-icon">🤖</span><span>Generator</span></button>
+  <button class="tab" onclick="showTab('verlauf', this)"><span class="tab-icon">🖼️</span><span>Meine Tattoos</span></button>
+  <button class="tab" onclick="showTab('studios', this)"><span class="tab-icon">📍</span><span>Studios</span></button>
 </div>
 
 <script>
-let aktuellerStil = 'black ink';
-let aktuellesModel = { model: 'black-forest-labs/flux-schnell', provider: 'replicate-image-generation' };
-let meineGenerierungen = JSON.parse(localStorage.getItem('tattoo_gen') || '[]');
-let istAmGenerieren = false;
+let stil = 'black ink';
+let model = 'black-forest-labs/flux-schnell';
+let laeuft = false;
+let letztesBildData = null;
+let verlauf = JSON.parse(localStorage.getItem('tattoo_verlauf') || '[]');
 
-function setPrompt(text) {
-  document.getElementById('prompt-inp').value = text;
+function setPrompt(txt) { document.getElementById('prompt-inp').value = txt; }
+
+function setStil(s, btn) {
+  stil = s;
+  document.querySelectorAll('[id^="stil-"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
 }
 
-function setStil(stil, btn) {
-  aktuellerStil = stil;
-  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('aktiv'));
-  btn.classList.add('aktiv');
+function setModel(m, btn) {
+  model = m;
+  document.querySelectorAll('[id^="m-"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
 }
 
-function setModel(modelObj, btn) {
-  aktuellesModel = modelObj;
-  document.querySelectorAll('[id^="model-"]').forEach(b => b.classList.remove('aktiv'));
-  btn.classList.add('aktiv');
-}
-
-async function generiereTattoo() {
-  if (istAmGenerieren) return;
-
+async function generiere() {
+  if (laeuft) return;
   const promptRaw = document.getElementById('prompt-inp').value.trim();
-  if (!promptRaw) {
-    document.getElementById('status-txt').textContent = '✗ Bitte erst beschreiben was du möchtest!';
-    return;
-  }
+  if (!promptRaw) { setStatus('✗ Bitte erst beschreiben was du möchtest!'); return; }
 
-  istAmGenerieren = true;
+  laeuft = true;
   document.getElementById('gen-btn').disabled = true;
   document.getElementById('gen-btn').textContent = '⏳ KI arbeitet...';
-  document.getElementById('loading-bar').classList.add('aktiv');
-  document.getElementById('status-txt').textContent = '🔄 Übersetze Prompt...';
-  document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon" style="animation:spin 1s linear infinite;display:inline-block">⚙️</div><div style="margin-top:12px">Generiere...</div></div>`;
+  document.getElementById('lbar').classList.add('on');
+  document.getElementById('result-box').innerHTML = `<div class="result-placeholder"><div class="spin" style="font-size:2rem">⚙️</div><div>Generiere...</div></div>`;
+  letztesBildData = null;
 
   try {
-    // Deutsch → Englisch übersetzen
+    // Deutsch → Englisch
     let promptEN = promptRaw;
     try {
-      const translated = await puter.ai.chat(
-        `Translate this tattoo description to English. Only return the English translation, nothing else: "${promptRaw}"`,
-        { model: 'claude-haiku-4-5' }
-      );
-      promptEN = translated?.message?.content?.[0]?.text || promptRaw;
-      document.getElementById('status-txt').textContent = '🤖 Generiere: ' + promptEN.slice(0,50) + '...';
-    } catch(e) {
-      promptEN = promptRaw; // Fallback auf Original
-    }
+      setStatus('🔄 Übersetze...');
+      const t = await puter.ai.chat(`Translate to English for image generation, return only the translation: "${promptRaw}"`, { model: 'claude-haiku-4-5' });
+      promptEN = t?.message?.content?.[0]?.text?.trim() || promptRaw;
+    } catch(e) { promptEN = promptRaw; }
 
-    const prompt = `tattoo design, ${promptEN}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
+    const prompt = `tattoo flash art, ${promptEN}, ${stil}, white background, professional tattoo illustration, high quality`;
+    setStatus('🤖 Generiere...');
 
-    const imageElement = await puter.ai.txt2img(prompt, aktuellesModel);
-    const imageUrl = imageElement.src;
+    const img = await puter.ai.txt2img(prompt, { model });
+    const src = img?.src || img;
+    if (!src) throw new Error('Kein Bild erhalten');
 
-    const resultArea = document.getElementById('result-area');
-    resultArea.innerHTML = `
-      <img src="${imageUrl}" class="result-img" alt="KI Tattoo">
+    // Bild als Base64 speichern für Verlauf
+    try {
+      const resp = await fetch(src);
+      const blob = await resp.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => { letztesBildData = reader.result; };
+      reader.readAsDataURL(blob);
+    } catch(e) { letztesBildData = src; }
+
+    document.getElementById('result-box').innerHTML = `
+      <img src="${src}" class="result-img" id="result-img">
       <div class="result-btns">
-        <button class="btn-out" onclick="downloadBild('${imageUrl}', '${promptRaw.slice(0,20).replace(/'/g,'')}')">⬇️ Speichern</button>
-        <button class="btn-out" onclick="zumVerlauf('${imageUrl}', '${promptRaw.slice(0,30).replace(/'/g,'')}')">❤️ Merken</button>
-        <button class="btn-out" onclick="generiereTattoo()">🔄 Nochmal</button>
+        <button class="btn" onclick="speichern()">⬇️ Speichern</button>
+        <button class="btn" onclick="merken()">❤️ Merken</button>
+        <button class="btn" onclick="generiere()">🔄 Nochmal</button>
       </div>`;
 
-    document.getElementById('status-txt').textContent = '✓ Fertig! Gefällt es dir?';
+    setStatus('✓ Fertig! Gefällt es dir?');
 
   } catch(e) {
-    document.getElementById('status-txt').textContent = '✗ Fehler: ' + e.message;
-    document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon">😕</div><div>Fehler — nochmal versuchen</div></div>`;
+    setStatus('✗ ' + (e.message || 'Fehler — nochmal versuchen'));
+    document.getElementById('result-box').innerHTML = `<div class="result-placeholder"><div style="font-size:2rem">😕</div><div>Fehler — nochmal versuchen</div></div>`;
   }
 
-  fertigGenerieren();
-}
-
-function fertigGenerieren() {
-  istAmGenerieren = false;
+  laeuft = false;
   document.getElementById('gen-btn').disabled = false;
   document.getElementById('gen-btn').textContent = '🤖 TATTOO GENERIEREN';
-  document.getElementById('loading-bar').classList.remove('aktiv');
+  document.getElementById('lbar').classList.remove('on');
 }
 
-function downloadBild(url, name) {
+function setStatus(txt) { document.getElementById('status').textContent = txt; }
+
+function speichern() {
+  const img = document.getElementById('result-img');
+  if (!img) return;
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'tattoo_' + name.replace(/ /g,'_') + '.png';
+  a.href = img.src;
+  a.download = 'tattoo_' + Date.now() + '.png';
   a.click();
 }
 
-function zumVerlauf(url, prompt) {
-  // Als Base64 im localStorage speichern
-  fetch(url).then(r => r.blob()).then(blob => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      meineGenerierungen.unshift({ id: Date.now(), img: reader.result, prompt, datum: new Date().toLocaleDateString('de-DE') });
-      if (meineGenerierungen.length > 20) meineGenerierungen.pop();
-      localStorage.setItem('tattoo_gen', JSON.stringify(meineGenerierungen));
-      document.getElementById('status-txt').textContent = '❤️ Gespeichert in "Meine Tattoos"!';
-    };
-    reader.readAsDataURL(blob);
-  });
+function merken() {
+  const img = document.getElementById('result-img');
+  if (!img) return;
+  const prompt = document.getElementById('prompt-inp').value.trim();
+  const data = letztesBildData || img.src;
+  verlauf.unshift({ id: Date.now(), img: data, prompt, datum: new Date().toLocaleDateString('de-DE') });
+  if (verlauf.length > 30) verlauf.pop();
+  localStorage.setItem('tattoo_verlauf', JSON.stringify(verlauf));
+  setStatus('❤️ Gespeichert in "Meine Tattoos"!');
 }
 
-function showPanel(panel, btn) {
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('aktiv'));
-  btn.classList.add('aktiv');
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
   const content = document.getElementById('content');
 
-  if (panel === 'generator') {
+  if (tab === 'generator') {
     location.reload();
-  } else if (panel === 'verlauf') {
-    meineGenerierungen = JSON.parse(localStorage.getItem('tattoo_gen') || '[]');
-    if (!meineGenerierungen.length) {
-      content.innerHTML = `<div class="fav-empty">
-        <div style="font-size:3rem;margin-bottom:12px;">🖼️</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--cyan);margin-bottom:8px;">KEINE TATTOOS GESPEICHERT</div>
-        <div style="font-size:.82rem;color:var(--muted);">Generiere ein Tattoo und tippe auf ❤️ Merken</div>
-      </div>`;
+  } else if (tab === 'verlauf') {
+    verlauf = JSON.parse(localStorage.getItem('tattoo_verlauf') || '[]');
+    if (!verlauf.length) {
+      content.innerHTML = `<div class="empty"><div style="font-size:3rem;margin-bottom:12px">🖼️</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--cyan);margin-bottom:8px">NOCH KEINE TATTOOS</div><div style="font-size:.82rem">Generiere ein Tattoo und tippe auf ❤️ Merken</div></div>`;
     } else {
       content.innerHTML = `
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--cyan);margin-bottom:12px;">MEINE TATTOOS (${meineGenerierungen.length})</div>
-        <div class="verlauf-grid">
-          ${meineGenerierungen.map(g => `
-            <div class="verlauf-card">
-              <img src="${g.img}" alt="${g.prompt}" loading="lazy">
-              <div class="verlauf-info">${g.prompt}</div>
-            </div>`).join('')}
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--cyan);margin-bottom:12px">MEINE TATTOOS (${verlauf.length})</div>
+        <div class="verlauf-grid">${verlauf.map(v => `
+          <div class="v-card">
+            <img src="${v.img}" alt="${v.prompt}" loading="lazy">
+            <div class="v-info">${v.prompt}</div>
+          </div>`).join('')}
         </div>`;
     }
-  } else if (panel === 'studios') {
+  } else if (tab === 'studios') {
     content.innerHTML = `
-      <div style="text-align:center;padding:40px 20px;">
-        <div style="font-size:3rem;margin-bottom:16px;">📍</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--cyan);margin-bottom:8px;">STUDIOS IN DEINER NÄHE</div>
-        <div style="font-size:.8rem;color:var(--muted);margin-bottom:24px;">Kommt in Version 2 — mit GPS Suche und direkter Kontaktaufnahme!</div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:left;">
-          <div style="font-size:.7rem;color:var(--accent2);letter-spacing:1px;margin-bottom:12px;">WAS KOMMT IN V2:</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:8px;">📍 GPS Suche — Studios in deiner Nähe</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:8px;">⭐ Bewertungen und Portfolio</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:8px;">📞 Direkter Kontakt zum Artist</div>
-          <div style="font-size:.8rem;color:var(--muted);">🤝 Nur Artists die mitmachen wollen</div>
+      <div class="card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:3rem;margin-bottom:16px">📍</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--cyan);margin-bottom:8px">STUDIOS IN DEINER NÄHE</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:20px">Kommt in Version 2!</div>
+        <div style="text-align:left;font-size:.8rem;color:var(--muted);line-height:2;">
+          📍 GPS Suche — Studios in der Nähe<br>
+          ⭐ Bewertungen und Portfolio<br>
+          📞 Direkter Kontakt zum Artist<br>
+          🤝 Nur Artists die mitmachen wollen
         </div>
       </div>`;
   }
