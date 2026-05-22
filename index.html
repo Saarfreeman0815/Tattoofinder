@@ -141,6 +141,23 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
       <button class="style-btn" onclick="setStil('geometric', this)">🔷 Geometric</button>
     </div>
 
+    <!-- MODEL AUSWAHL -->
+    <div class="quick-title" style="margin-top:14px;">KI MODEL</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <button class="style-btn aktiv" id="model-schnell" onclick="setModel('black-forest-labs/flux-schnell', this)">
+        ⚡ Flux Schnell<br><span style="font-size:.6rem;color:var(--green);">Kostenlos</span>
+      </button>
+      <button class="style-btn" id="model-pro" onclick="setModel('black-forest-labs/flux-1.1-pro', this)">
+        🔥 Flux 1.1 Pro<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
+      </button>
+      <button class="style-btn" id="model-sd3" onclick="setModel('stabilityai/stable-diffusion-3-medium', this)">
+        🎨 SD 3 Medium<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
+      </button>
+      <button class="style-btn" id="model-dalle" onclick="setModel('dall-e-3', this)">
+        🤖 DALL-E 3<br><span style="font-size:.6rem;color:var(--gold);">Puter Guthaben</span>
+      </button>
+    </div>
+
     <!-- PROMPT -->
     <div class="prompt-area">
       <textarea class="prompt-inp" id="prompt-inp" placeholder="Beschreib dein Tattoo auf Englisch oder Deutsch... z.B: Wolf mit Mond, tribal style" rows="2"></textarea>
@@ -175,6 +192,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 
 <script>
 let aktuellerStil = 'black ink';
+let aktuellesModel = 'black-forest-labs/flux-schnell';
 let meineGenerierungen = JSON.parse(localStorage.getItem('tattoo_gen') || '[]');
 let istAmGenerieren = false;
 
@@ -185,6 +203,12 @@ function setPrompt(text) {
 function setStil(stil, btn) {
   aktuellerStil = stil;
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('aktiv'));
+  btn.classList.add('aktiv');
+}
+
+function setModel(model, btn) {
+  aktuellesModel = model;
+  document.querySelectorAll('[id^="model-"]').forEach(b => b.classList.remove('aktiv'));
   btn.classList.add('aktiv');
 }
 
@@ -220,7 +244,7 @@ async function generiereTattoo() {
 
     const prompt = `tattoo design, ${promptEN}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
 
-    const imageElement = await puter.ai.txt2img(prompt, { model: 'black-forest-labs/flux-1.1-pro' });
+    const imageElement = await puter.ai.txt2img(prompt, { model: aktuellesModel });
     const imageUrl = imageElement.src;
 
     const resultArea = document.getElementById('result-area');
