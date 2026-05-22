@@ -87,6 +87,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 /* FAVORITEN */
 .fav-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
 </style>
+<script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
@@ -196,64 +197,34 @@ async function generiereTattoo() {
     return;
   }
 
-  // Prompt auf Englisch optimieren + Tattoo Stil einbauen
-  const prompt = `tattoo design, ${promptRaw}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed`;
-  const negativePrompt = 'blurry, low quality, text, watermark, signature, ugly, distorted, photo, realistic person, face, body';
+  const prompt = `tattoo design, ${promptRaw}, ${aktuellerStil}, white background, high quality, professional tattoo art, detailed, black ink illustration`;
 
   istAmGenerieren = true;
   document.getElementById('gen-btn').disabled = true;
   document.getElementById('gen-btn').textContent = '⏳ KI arbeitet...';
   document.getElementById('loading-bar').classList.add('aktiv');
   document.getElementById('status-txt').textContent = '🤖 KI generiert dein Tattoo... (10-30 Sekunden)';
+  document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon" style="animation:spin 1s linear infinite;display:inline-block">⚙️</div><div style="margin-top:12px">Generiere...</div></div>`;
 
   try {
-    // Hugging Face Inference API - Stable Diffusion kostenlos
-    const response = await fetch(
-      'https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inputs: prompt,
-          parameters: {
-            negative_prompt: negativePrompt,
-            num_inference_steps: 25,
-            guidance_scale: 7.5,
-            width: 512,
-            height: 512
-          }
-        })
-      }
-    );
+    // Puter.js - kein Key, kein CORS, kostenlos!
+    const imageElement = await puter.ai.txt2img(prompt);
+    const imageUrl = imageElement.src;
 
-    if (!response.ok) {
-      // Model lädt noch — nochmal versuchen
-      if (response.status === 503) {
-        document.getElementById('status-txt').textContent = '⏳ Model wird geladen... Nochmal versuchen!';
-        fertigGenerieren();
-        return;
-      }
-      throw new Error('Fehler: ' + response.status);
-    }
-
-    const blob = await response.blob();
-    const imageUrl = URL.createObjectURL(blob);
-
-    // Ergebnis anzeigen
     const resultArea = document.getElementById('result-area');
     resultArea.innerHTML = `
       <img src="${imageUrl}" class="result-img" alt="KI Tattoo">
       <div class="result-btns">
-        <button class="btn-out" onclick="downloadBild('${imageUrl}', '${promptRaw.slice(0,20)}')">⬇️ Speichern</button>
-        <button class="btn-out" onclick="zumVerlauf('${imageUrl}', '${promptRaw.slice(0,30).replace(/'/g, '')}')">❤️ Merken</button>
+        <button class="btn-out" onclick="downloadBild('${imageUrl}', '${promptRaw.slice(0,20).replace(/'/g,'')}')">⬇️ Speichern</button>
+        <button class="btn-out" onclick="zumVerlauf('${imageUrl}', '${promptRaw.slice(0,30).replace(/'/g,'')}')">❤️ Merken</button>
         <button class="btn-out" onclick="generiereTattoo()">🔄 Nochmal</button>
       </div>`;
 
     document.getElementById('status-txt').textContent = '✓ Fertig! Gefällt es dir?';
 
   } catch(e) {
-    document.getElementById('status-txt').textContent = '✗ Fehler: ' + e.message + ' — nochmal versuchen!';
-    document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon">😕</div><div>Fehler beim Generieren — nochmal versuchen</div></div>`;
+    document.getElementById('status-txt').textContent = '✗ Fehler: ' + e.message;
+    document.getElementById('result-area').innerHTML = `<div class="result-placeholder"><div class="icon">😕</div><div>Fehler — nochmal versuchen</div></div>`;
   }
 
   fertigGenerieren();
